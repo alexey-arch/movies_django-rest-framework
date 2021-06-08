@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Movie, Review, Rating
+from .models import Movie, Review, Rating, Actor
 
 class FilterReviewListSerializer(serializers.ListSerializer):
     """Фильтр комментариев, только parents"""
@@ -15,14 +15,28 @@ class RecursiveSerializer(serializers.Serializer):
         return serializer.data
 
 
+class ActorListSerializater(serializers.ModelSerializer):
+    """Получение актеров"""
+    class Meta:
+        model = Actor
+        fields = ('id', 'name', 'image')
+        
+
+class ActorDetailSerializater(serializers.ModelSerializer):
+    """Получение полной информации актеров"""
+    class Meta:
+        model = Actor
+        fields = '__all__'
+
+
 class CreateRatingSerializer(serializers.ModelSerializer):
-    """Созданиеб обновление рейтинга"""
+    """Создание обновление рейтинга"""
     class Meta:
         model = Rating
         fields = ('star', 'movie')
 
     def crate(self, validated_data):
-        rating = Rating.objects.update_to_create(
+        rating, _ = Rating.objects.update_to_create(
             ip=validated_data.get('ip',None),
             movie=validated_data.get('movie',None),
             default=validated_data.get('star'))
@@ -59,8 +73,8 @@ class ReviewSerializer(serializers.ModelSerializer):
 class MovieDetailSerializer(serializers.ModelSerializer):
     """Информация фильма"""
     category = serializers.SlugRelatedField(slug_field="name", read_only=True)
-    directors = serializers.SlugRelatedField(slug_field="name", read_only=True, many=True)
-    actors = serializers.SlugRelatedField(slug_field="name", read_only=True, many=True)
+    directors = ActorListSerializater(read_only=True, many=True)
+    actors = ActorListSerializater(read_only=True, many=True)
     genres = serializers.SlugRelatedField(slug_field="name", read_only=True, many=True)
     reviews = ReviewSerializer(many=True)
     class Meta:

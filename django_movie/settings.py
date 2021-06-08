@@ -41,7 +41,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'ckeditor',
     'ckeditor_uploader',
-    'movie'
+    'django_filters',
+
+    'movie',
 
 ]
 
@@ -201,4 +203,9 @@ CKEDITOR_CONFIGS = {
             # 'youtube'
         ]),
     }
+}
+
+
+REST_FRAMEWORK  = {
+    'DEFAULT_FILTER_BACKENDS' : ('django_filters.rest_framework.DjangoFilterBackend'),
 }

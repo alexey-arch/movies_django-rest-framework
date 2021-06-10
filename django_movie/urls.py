@@ -21,11 +21,13 @@ from .yasg import urlpatterns as doc_urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('admin-auth/', include('rest_framework.urls')),
+    path('api/v1/', include('movie.urls')),
+    path('api-auth/', include('rest_framework.urls')),
+    path('ckeditor/', include('ckeditor_uploader.urls')),
+    path('auth/', include('rest_framework_social_oauth2.urls')),
     path('auth/', include('djoser.urls')),
     path('auth/', include('djoser.urls.authtoken')),
-    path('ckeditor/', include('ckeditor_uploader.urls')),
-    path('api/v1/', include('movie.urls'))
+    path('auth/', include('djoser.urls.jwt')),
 ]
 
 urlpatterns += doc_urls
